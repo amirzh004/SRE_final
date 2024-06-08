@@ -4,8 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,16 +14,7 @@ public class LoginPageAcceptanceTest {
 
     @Before
     public void setUp() {
-        // Set GeckoDriver path dynamically
-        System.setProperty("webdriver.gecko.driver", "/usr/local/bin/geckodriver");
-
-        // Set options for headless testing
-        FirefoxOptions options = new FirefoxOptions();
-        options.addArguments("--headless");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-
-        driver = new FirefoxDriver(options);
+        driver = new HtmlUnitDriver(true);  // Enable JavaScript
     }
 
     @Test
