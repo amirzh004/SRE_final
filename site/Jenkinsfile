@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        CHROME_DRIVER_URL = 'https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip'
-        CHROME_DRIVER_DIR = '/tmp'
+        GECKO_DRIVER_URL = 'https://github.com/mozilla/geckodriver/releases/download/v0.29.1/geckodriver-v0.29.1-linux64.tar.gz'
+        GECKO_DRIVER_DIR = '/tmp'
     }
     stages {
         stage('Checkout') {
@@ -15,21 +15,22 @@ pipeline {
                 sh './mvnw clean install'
             }
         }
-        stage('Install unzip and ChromeDriver') {
+        stage('Install Firefox and GeckoDriver') {
             steps {
                 sh '''
                 sudo apt-get update -y
-                sudo apt-get install -y unzip
-                wget $CHROME_DRIVER_URL -P $CHROME_DRIVER_DIR
-                unzip $CHROME_DRIVER_DIR/chromedriver_linux64.zip -d $CHROME_DRIVER_DIR
-                chmod +x $CHROME_DRIVER_DIR/chromedriver
+                sudo apt-get install -y firefox
+                wget $GECKO_DRIVER_URL -P $GECKO_DRIVER_DIR
+                tar -xzf $GECKO_DRIVER_DIR/geckodriver-v0.29.1-linux64.tar.gz -C $GECKO_DRIVER_DIR
+                chmod +x $GECKO_DRIVER_DIR/geckodriver
+                sudo mv $GECKO_DRIVER_DIR/geckodriver /usr/local/bin/
                 echo "Contents of /tmp directory:"
-                ls -la $CHROME_DRIVER_DIR
-                echo "Checking if chromedriver is executable:"
-                if [ -x $CHROME_DRIVER_DIR/chromedriver ]; then
-                    echo "chromedriver is executable"
+                ls -la $GECKO_DRIVER_DIR
+                echo "Checking if geckodriver is executable:"
+                if [ -x /usr/local/bin/geckodriver ]; then
+                    echo "geckodriver is executable"
                 else
-                    echo "chromedriver is NOT executable"
+                    echo "geckodriver is NOT executable"
                 fi
                 '''
             }
@@ -51,10 +52,15 @@ pipeline {
         }
         stage('Acceptance Tests') {
             environment {
-                PATH = "/tmp:$PATH"
+                PATH = "/usr/local/bin:$PATH"
             }
             steps {
-                sh './mvnw verify -Dtest=com.community.LoginPageAcceptanceTest'
+                sh '''
+                echo "Verifying geckodriver path:"
+                which geckodriver
+                ls -la /usr/local/bin/geckodriver
+                ./mvnw verify -Dtest=com.community.LoginPageAcceptanceTest
+                '''
             }
         }
         stage('Deploy to Production') {
