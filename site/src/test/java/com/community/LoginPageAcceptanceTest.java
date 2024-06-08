@@ -19,7 +19,10 @@ public class LoginPageAcceptanceTest {
 
     @Before
     public void setUp() throws IOException {
+        // Set ChromeDriver path dynamically
         System.setProperty("webdriver.chrome.driver", "/tmp/chromedriver");
+
+        // Set options for headless testing (optional)
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.addArguments("--no-sandbox");
@@ -31,7 +34,9 @@ public class LoginPageAcceptanceTest {
     @Test
     public void testLoginPage() {
         driver.get("https://35.157.75.60:8443/login");
+        // Example assertion to verify the page title
         assertEquals("Login - DemoSite", driver.getTitle());
+        // Add more assertions and interactions as needed
     }
 
     @After

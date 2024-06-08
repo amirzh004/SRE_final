@@ -46,7 +46,7 @@ pipeline {
                 PATH = "/tmp:$PATH"
             }
             steps {
-                sh './mvnw verify -Dtest=com.mycompany.demosite.LoginPageAcceptanceTest'
+                sh './mvnw verify -Dtest=com.community.LoginPageAcceptanceTest'
             }
         }
         stage('Deploy to Production') {
