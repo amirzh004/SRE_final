@@ -1,0 +1,51 @@
+stages:
+  - integration
+  - test
+  - deploy
+
+integration_job:
+  stage: integration
+  script:
+    - echo "Starting integration process..."
+    - ./gradlew clean build # Command to build the project
+  only:
+    - merge_requests
+    - main
+
+unit_test:
+  stage: test
+  script:
+    - echo "Running unit tests..."
+    - ./gradlew test # Command to run unit tests
+  only:
+    - merge_requests
+    - main
+
+integration_test:
+  stage: test
+  script:
+    - echo "Running integration tests..."
+    - ./gradlew integrationTest # Command to run integration tests
+  only:
+    - merge_requests
+    - main
+
+acceptance_test:
+  stage: test
+  script:
+    - echo "Running acceptance tests..."
+    - ./gradlew acceptanceTest # Command to run acceptance tests
+  only:
+    - merge_requests
+    - main
+
+deploy_production:
+  stage: deploy
+  script:
+    - echo "Deploying to production..."
+    - ./gradlew deploy # Command to deploy the project
+  only:
+    - main
+  environment:
+    name: production
+    url: http://your-production-url
