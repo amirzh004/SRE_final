@@ -15,6 +15,17 @@ pipeline {
                 sh './mvnw clean install'
             }
         }
+        stage('Install unzip and ChromeDriver') {
+            steps {
+                sh '''
+                sudo apt-get update -y
+                sudo apt-get install -y unzip
+                wget $CHROME_DRIVER_URL -P $CHROME_DRIVER_DIR
+                unzip $CHROME_DRIVER_DIR/chromedriver_linux64.zip -d $CHROME_DRIVER_DIR
+                chmod +x $CHROME_DRIVER_DIR/chromedriver
+                '''
+            }
+        }
         stage('Unit Tests') {
             steps {
                 sh './mvnw test'
@@ -32,12 +43,7 @@ pipeline {
         }
         stage('Acceptance Tests') {
             steps {
-                sh """
-                wget $CHROME_DRIVER_URL -P $CHROME_DRIVER_DIR
-                unzip $CHROME_DRIVER_DIR/chromedriver_linux64.zip -d $CHROME_DRIVER_DIR
-                chmod +x $CHROME_DRIVER_DIR/chromedriver
-                ./mvnw verify -Dtest=com.mycompany.demosite.LoginPageAcceptanceTest
-                """
+                sh './mvnw verify -Dtest=com.mycompany.demosite.LoginPageAcceptanceTest'
             }
         }
         stage('Deploy to Production') {
