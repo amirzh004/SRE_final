@@ -23,6 +23,7 @@ pipeline {
                 wget $CHROME_DRIVER_URL -P $CHROME_DRIVER_DIR
                 unzip $CHROME_DRIVER_DIR/chromedriver_linux64.zip -d $CHROME_DRIVER_DIR
                 chmod +x $CHROME_DRIVER_DIR/chromedriver
+                ls -la $CHROME_DRIVER_DIR  # Print directory contents for debugging
                 '''
             }
         }
