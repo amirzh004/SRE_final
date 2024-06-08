@@ -23,7 +23,14 @@ pipeline {
                 wget $CHROME_DRIVER_URL -P $CHROME_DRIVER_DIR
                 unzip $CHROME_DRIVER_DIR/chromedriver_linux64.zip -d $CHROME_DRIVER_DIR
                 chmod +x $CHROME_DRIVER_DIR/chromedriver
-                ls -la $CHROME_DRIVER_DIR  # Print directory contents for debugging
+                echo "Contents of /tmp directory:"
+                ls -la $CHROME_DRIVER_DIR
+                echo "Checking if chromedriver is executable:"
+                if [ -x $CHROME_DRIVER_DIR/chromedriver ]; then
+                    echo "chromedriver is executable"
+                else
+                    echo "chromedriver is NOT executable"
+                fi
                 '''
             }
         }
