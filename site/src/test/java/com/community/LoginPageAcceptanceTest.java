@@ -1,18 +1,18 @@
 package com.community;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoginPageAcceptanceTest {
 
     private WebDriver driver;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         driver = new HtmlUnitDriver(true);  // Enable JavaScript
     }
@@ -25,7 +25,7 @@ public class LoginPageAcceptanceTest {
         // Add more assertions and interactions as needed
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (driver != null) {
             driver.quit();
