@@ -1,5 +1,4 @@
 package com.community;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -20,18 +19,7 @@ public class LoginPageAcceptanceTest {
 
     @Before
     public void setUp() throws IOException {
-        File chromeDriver = new File("/tmp/chromedriver");
-        if (!chromeDriver.exists()) {
-            FileUtils.copyURLToFile(
-                new URL("https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip"),
-                new File("/tmp/chromedriver.zip")
-            );
-            Runtime.getRuntime().exec("unzip /tmp/chromedriver.zip -d /tmp/");
-            new File("/tmp/chromedriver").setExecutable(true);
-        }
-
         System.setProperty("webdriver.chrome.driver", "/tmp/chromedriver");
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.addArguments("--no-sandbox");

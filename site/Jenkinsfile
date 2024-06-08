@@ -10,7 +10,7 @@ pipeline {
                 git 'https://github.com/amirzh004/SRE_final'
             }
         }
-         stage('Install Dependencies') {
+        stage('Install Dependencies') {
             steps {
                 sh './mvnw clean install'
             }
@@ -42,6 +42,9 @@ pipeline {
             }
         }
         stage('Acceptance Tests') {
+            environment {
+                PATH = "/tmp:$PATH"
+            }
             steps {
                 sh './mvnw verify -Dtest=com.mycompany.demosite.LoginPageAcceptanceTest'
             }
