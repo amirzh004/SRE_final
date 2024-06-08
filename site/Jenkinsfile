@@ -1,12 +1,16 @@
 pipeline {
     agent any
+    environment {
+        CHROME_DRIVER_URL = 'https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip'
+        CHROME_DRIVER_DIR = '/tmp'
+    }
     stages {
         stage('Checkout') {
             steps {
                 git 'https://github.com/amirzh004/SRE_final'
             }
         }
-        stage('Install Dependencies') {
+         stage('Install Dependencies') {
             steps {
                 sh './mvnw clean install'
             }
@@ -28,7 +32,12 @@ pipeline {
         }
         stage('Acceptance Tests') {
             steps {
-                sh './mvnw verify -Dtest=com.community.LoginPageAcceptanceTest'
+                sh """
+                wget $CHROME_DRIVER_URL -P $CHROME_DRIVER_DIR
+                unzip $CHROME_DRIVER_DIR/chromedriver_linux64.zip -d $CHROME_DRIVER_DIR
+                chmod +x $CHROME_DRIVER_DIR/chromedriver
+                ./mvnw verify -Dtest=com.mycompany.demosite.LoginPageAcceptanceTest
+                """
             }
         }
         stage('Deploy to Production') {
@@ -39,8 +48,8 @@ pipeline {
         }
         stage('Monitoring') {
             steps {
-                sh 'curl -X POST http://localhost:9090/-/reload'
-                sh 'curl -X POST http://localhost:9093/-/reload'
+                sh 'curl -X POST http://localhost:9090/-/reload'  // Reload Prometheus configuration
+                sh 'curl -X POST http://localhost:9093/-/reload'  // Reload Alertmanager configuration
             }
         }
     }
