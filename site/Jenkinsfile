@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/amirzh004/SRE_final'
+            }
+        }
+        stage('Install Dependencies') {
+            steps {
+                sh './mvnw clean install'
+            }
+        }
+        stage('Unit Tests') {
+            steps {
+                sh './mvnw test'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh './mvnw package'
+            }
+        }
+        stage('Deploy to Staging') {
+            steps {
+                sh 'docker-compose -f docker-compose.staging.yml up -d'
+            }
+        }
+        stage('Acceptance Tests') {
+            steps {
+                sh './mvnw verify -Dtest=com.community.LoginPageAcceptanceTest'
+            }
+        }
+        stage('Deploy to Production') {
+            steps {
+                input message: 'Deploy to production?', ok: 'Deploy'
+                sh 'docker-compose -f docker-compose.production.yml up -d'
+            }
+        }
+        stage('Monitoring') {
+            steps {
+                sh 'curl -X POST http://localhost:9090/-/reload'
+                sh 'curl -X POST http://localhost:9093/-/reload'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completed'
+        }
+        success {
+            echo 'Pipeline succeeded'
+        }
+        failure {
+            echo 'Pipeline failed'
+        }
+    }
+}

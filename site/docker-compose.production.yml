@@ -1,0 +1,13 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "8443:8443"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+    command: java -Dserver.port=8443 -jar site.jar
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
