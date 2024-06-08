@@ -1,8 +1,8 @@
-package com.community.service;
+package com.community.integration;
 
 import org.junit.jupiter.api.Test;
 
-public class MyServiceTest {
+public class MyIntegrationTest {
 
 
     @Test
